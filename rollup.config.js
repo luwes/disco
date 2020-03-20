@@ -3,7 +3,6 @@ import { terser } from 'rollup-plugin-terser';
 import bundleSize from 'rollup-plugin-size';
 
 const terserPlugin = terser({
-  sourcemap: true,
   warnings: true,
   compress: {
     passes: 2,
@@ -18,7 +17,6 @@ const config = {
   },
   output: {
     format: 'iife',
-    sourcemap: true,
     file: 'dist/disco.min.js',
     name: 'disco',
     strict: false, // Remove `use strict;`

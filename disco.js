@@ -1,53 +1,48 @@
-
-const observing = [];
+let observedSelector;
+const observer = new MutationObserver(onChanges);
+const options = { subtree: true, childList: true };
+observer.observe(document, options);
 
 export function observe(selector) {
-  const element = qs(selector);
-  if (observing.some(o => o.contains(element))) return element;
+  observer.observe(document, options);
+  observedSelector = selector;
+  return observedSelector;
+}
 
-  observing.push(element);
+function onChanges(mutationList) {
+  mutationList.forEach((mutation) => {
+    dispatchAll('disconnected', mutation.target, mutation.removedNodes);
+    dispatchAll('connected', mutation.target, mutation.addedNodes);
+  });
+}
 
-  const observer = new MutationObserver(onChanges);
-  observer.observe(element, { subtree: true, childList: true });
+function dispatchAll(type, parent, nodes) {
+  nodes.forEach(node => {
+    if (node.nodeType === 1) {
+      dispatchTarget(type, parent, node);
+    }
+  });
+}
 
-  function onChanges(mutationList) {
-    mutationList.forEach((mutation) => {
-      dispatchAll('disconnected', mutation.removedNodes);
-      dispatchAll('connected', mutation.addedNodes);
-    });
+function dispatchTarget(type, parent, node) {
+  const observed = qs(observedSelector);
+  // Prevent firing out of the observe scope.
+  if (observed && (observed.contains(parent) || observed.contains(node))) {
+    node.dispatchEvent(new Event(type));
   }
-
-  return element;
-}
-
-function dispatchAll(type, nodes) {
-  nodes.forEach(node => node.nodeType === 1 && dispatchTarget(type, node));
-}
-
-function dispatchTarget(type, node) {
-  node.dispatchEvent(new Event(type));
 
   node = node.firstChild;
   while (node) {
-    dispatchTarget(type, node);
+    dispatchTarget(type, parent, node);
     node = node.nextSibling;
   }
 }
 
-export const connected = conn('');
-export const disconnected = conn('dis');
-
-function conn(dis) {
-  return function(selector, fn) {
-    const element = qs(selector);
-    if (element && (element.isConnected || dis)) {
-      fn(element);
-    } else {
-      document.addEventListener(`${dis}connected`, e => {
-        if (e.target === element) fn(e.target);
-      }, true);
-    }
-  };
+export function unobserve() {
+  if (observer) {
+    observer.disconnect();
+    observedSelector = null;
+  }
 }
 
 function qs(selector) {

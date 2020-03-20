@@ -2,24 +2,35 @@
   "name": "disco",
   "version": "1.0.0",
   "description": "Easy and universal way to react to elements being disconnected and connected from the DOM.",
-  "type": "module",
   "main": "disco.js",
   "module": "disco.js",
   "scripts": {
     "dev": "rollup -wc --silent",
     "build": "rollup -c --silent",
-    "test": "node test.js"
+    "test": "karma start"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@rollup/plugin-alias": "^3.0.1",
     "@rollup/plugin-node-resolve": "^7.1.1",
+    "ansi-colors": "^4.1.1",
     "browser-env": "^3.3.0",
     "eslint": "^6.8.0",
+    "faucet": "^0.0.1",
+    "karma": "^4.4.1",
+    "karma-browserstack-launcher": "^1.5.1",
+    "karma-chrome-launcher": "^3.0.0",
+    "karma-coverage": "^2.0.1",
+    "karma-rollup-preprocessor": "^7.0.3",
+    "karma-sauce-launcher": "^1",
+    "karma-tap": "^4.2.0",
+    "karma-tap-pretty-reporter": "^4.2.0",
+    "minimist": "^1.2.5",
     "rollup": "^2.1.0",
     "rollup-plugin-size": "^0.2.2",
     "rollup-plugin-terser": "^5.3.0",
-    "tape": "^4.13.2"
+    "tape-browser": "^4.13.0"
   }
 }
