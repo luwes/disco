@@ -1,7 +1,7 @@
 # Disco 🕺
 
 [![Version](https://img.shields.io/npm/v/@luwes/disco.svg?color=success&style=flat-square)](https://www.npmjs.com/package/@luwes/disco)
-![Badge size](https://img.badgesize.io/https://unpkg.com/@luwes/disco/dist/disco.min.js?v=1&compression=gzip&label=gzip&style=flat-square)
+![Badge size](https://img.badgesize.io/https://unpkg.com/@luwes/disco/dist/disco.min.js?v=1&compression=gzip&label=gzip&style=flat-square&v=1)
 
 
 **npm**: `npm i @luwes/disco`  
