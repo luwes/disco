@@ -5,8 +5,7 @@ import bundleSize from 'rollup-plugin-size';
 const terserPlugin = terser({
   warnings: true,
   compress: {
-    passes: 2,
-    sequences: false, // caused an issue with Babel where sequence order was wrong
+    passes: 2
   }
 });
 

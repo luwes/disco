@@ -3,15 +3,15 @@ let observed = new Set();
 let observedSelectors;
 
 /**
- * Observe a node or an element selector for dis-connected mutations.
- * @param  {Node|String|Array} selector
+ * Observe a node, array of nodes or an element selector for dis-connected events.
+ * @param  {...(Node|String)} nodesOrSelectors
  */
-export function observe(selector) {
+export function observe(...nodesOrSelectors) {
   if (!observer) {
     observer = new MutationObserver(onChanges);
     observer.observe(document, { subtree: true, childList: true });
   }
-  [].concat(selector).forEach(s => observed.add(s));
+  nodesOrSelectors.forEach(s => observed.add(s));
 }
 
 function onChanges(mutationList) {
@@ -43,12 +43,14 @@ function dispatchTarget(type, node) {
 }
 
 /**
- * Unobserve for dis-connected events
- * @param  {Node|String|Array} selector
+ * Unobserve for dis-connected events.
+ * Passing no argument will unobserve all previously observed scopes.
+ *
+ * @param  {...(Node|String)} [nodesOrSelectors]
  */
-export function unobserve(selector) {
-  if (selector) {
-    [].concat(selector).forEach(s => observed.delete(s));
+export function unobserve(...nodesOrSelectors) {
+  if (nodesOrSelectors.length) {
+    nodesOrSelectors.forEach(s => observed.delete(s));
   } else {
     observed.clear();
   }

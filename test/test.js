@@ -40,7 +40,7 @@ test('fires a connected event for subtree', t => {
   strong.addEventListener('connected', () => t.pass());
   div.addEventListener('connected', () => t.pass());
 
-  observe([strong, 'div']);
+  observe(strong, 'div');
   body.append(div);
 });
 
@@ -114,6 +114,6 @@ test('fires a disconnected event for subtree observing NodeList', t => {
   div2.addEventListener('disconnected', () => t.pass());
 
   body.append(div);
-  observe([...document.querySelectorAll('div')]);
+  observe(...document.querySelectorAll('div'));
   div.remove();
 });
