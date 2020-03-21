@@ -1,50 +1,59 @@
-let observedSelector;
-const observer = new MutationObserver(onChanges);
-const options = { subtree: true, childList: true };
-observer.observe(document, options);
+let observer;
+let observed = new Set();
+let observedSelectors;
 
+/**
+ * Observe a node or an element selector for dis-connected mutations.
+ * @param  {Node|String|Array} selector
+ */
 export function observe(selector) {
-  observer.observe(document, options);
-  observedSelector = selector;
-  return observedSelector;
+  if (!observer) {
+    observer = new MutationObserver(onChanges);
+    observer.observe(document, { subtree: true, childList: true });
+  }
+  [].concat(selector).forEach(s => observed.add(s));
 }
 
 function onChanges(mutationList) {
-  mutationList.forEach((mutation) => {
-    dispatchAll('disconnected', mutation.target, mutation.removedNodes);
-    dispatchAll('connected', mutation.target, mutation.addedNodes);
+  observedSelectors = [...observed].filter(s => typeof s === 'string');
+
+  mutationList.forEach(({ removedNodes, addedNodes }) => {
+    dispatchAll('disconnected', removedNodes);
+    dispatchAll('connected', addedNodes);
   });
 }
 
-function dispatchAll(type, parent, nodes) {
-  nodes.forEach(node => {
-    if (node.nodeType === 1) {
-      dispatchTarget(type, parent, node);
-    }
-  });
+function dispatchAll(type, nodes) {
+  nodes.forEach(node => dispatchTarget(type, node));
 }
 
-function dispatchTarget(type, parent, node) {
-  const observed = qs(observedSelector);
+function dispatchTarget(type, node) {
+  if (node.nodeType !== 1) return;
+
   // Prevent firing out of the observe scope.
-  if (observed && (observed.contains(parent) || observed.contains(node))) {
+  if (observed.has(node) || observedSelectors.some(s => node.matches(s))) {
     node.dispatchEvent(new Event(type));
   }
 
   node = node.firstChild;
   while (node) {
-    dispatchTarget(type, parent, node);
+    dispatchTarget(type, node);
     node = node.nextSibling;
   }
 }
 
-export function unobserve() {
-  if (observer) {
-    observer.disconnect();
-    observedSelector = null;
+/**
+ * Unobserve for dis-connected events
+ * @param  {Node|String|Array} selector
+ */
+export function unobserve(selector) {
+  if (selector) {
+    [].concat(selector).forEach(s => observed.delete(s));
+  } else {
+    observed.clear();
   }
-}
-
-function qs(selector) {
-  return selector instanceof Node ? selector : document.querySelector(selector);
+  if (observer && !observed.size) {
+    observer.disconnect();
+    observer = null;
+  }
 }
