@@ -1,5 +1,5 @@
 {
-  "name": "@luwes/disco",
+  "name": "disco",
   "version": "1.0.0",
   "description": "Easy and universal way to react to elements being `disconnected` and `connected` via native DOM events.",
   "main": "disco.js",
