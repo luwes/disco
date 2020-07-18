@@ -24,7 +24,7 @@ function onChanges(mutationList) {
 }
 
 function dispatchAll(type, nodes) {
-  nodes.forEach(node => dispatchTarget(type, node));
+  Array.from(nodes).forEach(node => dispatchTarget(type, node));
 }
 
 function dispatchTarget(type, node) {
